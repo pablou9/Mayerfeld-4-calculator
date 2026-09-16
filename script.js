@@ -14,6 +14,7 @@ function divide(a, b) {
     return a / b;
 }
 
+
 function operate(operator, a, b) {
 
     switch (operator) {
@@ -36,23 +37,10 @@ function operate(operator, a, b) {
 }
 
 
-// DOM elements
+// DOM
 
 const display = document.querySelector(".display");
-
-const numberButtons = document.querySelectorAll(
-    ".buttons button"
-);
-
-const operatorButtons = document.querySelectorAll(
-    ".buttons button"
-);
-
-const equalsButton = [...document.querySelectorAll(".buttons button")]
-    .find(button => button.textContent === "=");
-
-const clearButton = [...document.querySelectorAll(".buttons button")]
-    .find(button => button.textContent === "C");
+const buttons = document.querySelectorAll("button");
 
 
 // Calculator state
@@ -70,31 +58,58 @@ function updateDisplay() {
 }
 
 
-// Numbers
+// Number input
 
 function inputNumber(number) {
 
     if (waitingForSecondNumber) {
+
         displayValue = number;
         waitingForSecondNumber = false;
+
     } else if (displayValue === "0") {
+
         displayValue = number;
+
     } else {
+
         displayValue += number;
+
     }
 
     updateDisplay();
 }
 
 
-// Operators
+// Operator
 
-function selectOperator(selectedOperator) {
+function selectOperator(nextOperator) {
 
-    firstNumber = Number(displayValue);
-    operator = selectedOperator;
+    const inputValue = Number(displayValue);
 
+    // If there is already an operation waiting,
+    // calculate it before storing the new operator.
+    if (operator !== null && waitingForSecondNumber === false) {
+
+        const result = operate(
+            operator,
+            firstNumber,
+            inputValue
+        );
+
+        displayValue = String(result);
+        firstNumber = result;
+
+    } else {
+
+        firstNumber = inputValue;
+
+    }
+
+    operator = nextOperator;
     waitingForSecondNumber = true;
+
+    updateDisplay();
 }
 
 
@@ -120,7 +135,7 @@ function calculate() {
 
     displayValue = String(result);
 
-    firstNumber = null;
+    firstNumber = result;
     operator = null;
     waitingForSecondNumber = true;
 
@@ -141,9 +156,9 @@ function clearCalculator() {
 }
 
 
-// Number buttons
+// Buttons
 
-numberButtons.forEach(button => {
+buttons.forEach(button => {
 
     const value = button.textContent;
 
@@ -155,16 +170,7 @@ numberButtons.forEach(button => {
 
     }
 
-});
-
-
-// Operator buttons
-
-numberButtons.forEach(button => {
-
-    const value = button.textContent;
-
-    if (["+", "-", "*", "/"].includes(value)) {
+    else if (["+", "-", "*", "/"].includes(value)) {
 
         button.addEventListener("click", () => {
             selectOperator(value);
@@ -172,17 +178,19 @@ numberButtons.forEach(button => {
 
     }
 
+    else if (value === "=") {
+
+        button.addEventListener("click", calculate);
+
+    }
+
+    else if (value === "C") {
+
+        button.addEventListener("click", clearCalculator);
+
+    }
+
 });
-
-
-// Equals
-
-equalsButton.addEventListener("click", calculate);
-
-
-// Clear
-
-clearButton.addEventListener("click", clearCalculator);
 
 
 updateDisplay();
