@@ -239,22 +239,59 @@ buttons.forEach(button => {
 
     }
 
+    else if (value === "Backspace") {
+
+        button.addEventListener("click", backspace);
+
+    }
+
 });
-function backspace() {
 
-    if (waitingForSecondNumber) {
-        return;
-    }
+document.addEventListener("keydown", event => {
 
-    if (displayValue.length === 1) {
+    const key = event.key;
 
-        displayValue = "0";
+    // Numbers
+    if (/^\d$/.test(key)) {
 
-    } else {
-
-        displayValue = displayValue.slice(0, -1);
+        inputNumber(key);
 
     }
 
-    updateDisplay();
-}
+    // Decimal
+    else if (key === ".") {
+
+        inputDecimal();
+
+    }
+
+    // Operators
+    else if (["+", "-", "*", "/"].includes(key)) {
+
+        selectOperator(key);
+
+    }
+
+    // Equals
+    else if (key === "=" || key === "Enter") {
+
+        calculate();
+
+    }
+
+    // Backspace
+    else if (key === "Backspace") {
+
+        backspace();
+
+    }
+
+    // Clear
+    else if (key === "Escape") {
+
+        clearCalculator();
+
+    }
+
+});
+updateDisplay();
