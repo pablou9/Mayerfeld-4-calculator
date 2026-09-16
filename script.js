@@ -135,7 +135,18 @@ function selectOperator(nextOperator) {
         displayValue = String(result);
 
         if (typeof result === "number") {
+
             firstNumber = result;
+
+        } else {
+
+            firstNumber = null;
+            operator = null;
+            waitingForSecondNumber = true;
+
+            updateDisplay();
+
+            return;
         }
 
     } else {
@@ -174,9 +185,13 @@ function calculate() {
     displayValue = String(result);
 
     if (typeof result === "number") {
+
         firstNumber = result;
+
     } else {
+
         firstNumber = null;
+
     }
 
     operator = null;
@@ -194,6 +209,28 @@ function clearCalculator() {
     firstNumber = null;
     operator = null;
     waitingForSecondNumber = false;
+
+    updateDisplay();
+}
+
+
+// Backspace
+
+function backspace() {
+
+    if (waitingForSecondNumber) {
+        return;
+    }
+
+    if (displayValue.length === 1) {
+
+        displayValue = "0";
+
+    } else {
+
+        displayValue = displayValue.slice(0, -1);
+
+    }
 
     updateDisplay();
 }
@@ -247,11 +284,13 @@ buttons.forEach(button => {
 
 });
 
+
 document.addEventListener("keydown", event => {
 
     const key = event.key;
 
     // Numbers
+
     if (/^\d$/.test(key)) {
 
         inputNumber(key);
@@ -259,6 +298,7 @@ document.addEventListener("keydown", event => {
     }
 
     // Decimal
+
     else if (key === ".") {
 
         inputDecimal();
@@ -266,6 +306,7 @@ document.addEventListener("keydown", event => {
     }
 
     // Operators
+
     else if (["+", "-", "*", "/"].includes(key)) {
 
         selectOperator(key);
@@ -273,6 +314,7 @@ document.addEventListener("keydown", event => {
     }
 
     // Equals
+
     else if (key === "=" || key === "Enter") {
 
         calculate();
@@ -280,6 +322,7 @@ document.addEventListener("keydown", event => {
     }
 
     // Backspace
+
     else if (key === "Backspace") {
 
         backspace();
@@ -287,6 +330,7 @@ document.addEventListener("keydown", event => {
     }
 
     // Clear
+
     else if (key === "Escape") {
 
         clearCalculator();
@@ -294,4 +338,5 @@ document.addEventListener("keydown", event => {
     }
 
 });
+
 updateDisplay();
