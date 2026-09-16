@@ -240,6 +240,21 @@ buttons.forEach(button => {
     }
 
 });
+function backspace() {
 
+    if (waitingForSecondNumber) {
+        return;
+    }
 
-updateDisplay();
+    if (displayValue.length === 1) {
+
+        displayValue = "0";
+
+    } else {
+
+        displayValue = displayValue.slice(0, -1);
+
+    }
+
+    updateDisplay();
+}
