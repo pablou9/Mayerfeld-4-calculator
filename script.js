@@ -17,23 +17,31 @@ function divide(a, b) {
 
 function operate(operator, a, b) {
 
+    let result;
+
     switch (operator) {
 
         case "+":
-            return add(a, b);
+            result = add(a, b);
+            break;
 
         case "-":
-            return subtract(a, b);
+            result = subtract(a, b);
+            break;
 
         case "*":
-            return multiply(a, b);
+            result = multiply(a, b);
+            break;
 
         case "/":
-            return divide(a, b);
+            result = divide(a, b);
+            break;
 
         default:
             return null;
     }
+
+    return roundResult(result);
 }
 
 
@@ -194,3 +202,9 @@ buttons.forEach(button => {
 
 
 updateDisplay();
+
+function roundResult(result) {
+
+    return Math.round(result * 100000000) / 100000000;
+
+}
