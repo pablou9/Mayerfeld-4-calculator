@@ -36,23 +36,48 @@ function operate(operator, a, b) {
 }
 
 
-// Display
+// DOM elements
+
 const display = document.querySelector(".display");
 
-// Store the value currently shown on the display
+const numberButtons = document.querySelectorAll(
+    ".buttons button"
+);
+
+const operatorButtons = document.querySelectorAll(
+    ".buttons button"
+);
+
+const equalsButton = [...document.querySelectorAll(".buttons button")]
+    .find(button => button.textContent === "=");
+
+const clearButton = [...document.querySelectorAll(".buttons button")]
+    .find(button => button.textContent === "C");
+
+
+// Calculator state
+
 let displayValue = "0";
+let firstNumber = null;
+let operator = null;
+let waitingForSecondNumber = false;
 
 
-// Update the calculator display
+// Display
+
 function updateDisplay() {
     display.textContent = displayValue;
 }
 
 
-// Add a number to the display
+// Numbers
+
 function inputNumber(number) {
 
-    if (displayValue === "0") {
+    if (waitingForSecondNumber) {
+        displayValue = number;
+        waitingForSecondNumber = false;
+    } else if (displayValue === "0") {
         displayValue = number;
     } else {
         displayValue += number;
@@ -62,22 +87,102 @@ function inputNumber(number) {
 }
 
 
-// Select all number buttons
-const numberButtons = document.querySelectorAll(".buttons button");
+// Operators
+
+function selectOperator(selectedOperator) {
+
+    firstNumber = Number(displayValue);
+    operator = selectedOperator;
+
+    waitingForSecondNumber = true;
+}
 
 
-// Add event listeners to number buttons
+// Equals
+
+function calculate() {
+
+    if (
+        firstNumber === null ||
+        operator === null ||
+        waitingForSecondNumber
+    ) {
+        return;
+    }
+
+    const secondNumber = Number(displayValue);
+
+    const result = operate(
+        operator,
+        firstNumber,
+        secondNumber
+    );
+
+    displayValue = String(result);
+
+    firstNumber = null;
+    operator = null;
+    waitingForSecondNumber = true;
+
+    updateDisplay();
+}
+
+
+// Clear
+
+function clearCalculator() {
+
+    displayValue = "0";
+    firstNumber = null;
+    operator = null;
+    waitingForSecondNumber = false;
+
+    updateDisplay();
+}
+
+
+// Number buttons
+
 numberButtons.forEach(button => {
 
-    if (!isNaN(button.textContent)) {
+    const value = button.textContent;
+
+    if (/^\d$/.test(value)) {
 
         button.addEventListener("click", () => {
-            inputNumber(button.textContent);
+            inputNumber(value);
         });
 
     }
 
 });
+
+
+// Operator buttons
+
+numberButtons.forEach(button => {
+
+    const value = button.textContent;
+
+    if (["+", "-", "*", "/"].includes(value)) {
+
+        button.addEventListener("click", () => {
+            selectOperator(value);
+        });
+
+    }
+
+});
+
+
+// Equals
+
+equalsButton.addEventListener("click", calculate);
+
+
+// Clear
+
+clearButton.addEventListener("click", clearCalculator);
 
 
 updateDisplay();
