@@ -15,6 +15,11 @@ function divide(a, b) {
 }
 
 
+function roundResult(result) {
+    return Math.round(result * 100000000) / 100000000;
+}
+
+
 function operate(operator, a, b) {
 
     let result;
@@ -34,6 +39,11 @@ function operate(operator, a, b) {
             break;
 
         case "/":
+
+            if (b === 0) {
+                return "Nice try! You can't divide by zero 😎";
+            }
+
             result = divide(a, b);
             break;
 
@@ -95,8 +105,6 @@ function selectOperator(nextOperator) {
 
     const inputValue = Number(displayValue);
 
-    // If there is already an operation waiting,
-    // calculate it before storing the new operator.
     if (operator !== null && waitingForSecondNumber === false) {
 
         const result = operate(
@@ -106,12 +114,14 @@ function selectOperator(nextOperator) {
         );
 
         displayValue = String(result);
-        firstNumber = result;
+
+        if (typeof result === "number") {
+            firstNumber = result;
+        }
 
     } else {
 
         firstNumber = inputValue;
-
     }
 
     operator = nextOperator;
@@ -143,7 +153,12 @@ function calculate() {
 
     displayValue = String(result);
 
-    firstNumber = result;
+    if (typeof result === "number") {
+        firstNumber = result;
+    } else {
+        firstNumber = null;
+    }
+
     operator = null;
     waitingForSecondNumber = true;
 
@@ -202,9 +217,3 @@ buttons.forEach(button => {
 
 
 updateDisplay();
-
-function roundResult(result) {
-
-    return Math.round(result * 100000000) / 100000000;
-
-}
