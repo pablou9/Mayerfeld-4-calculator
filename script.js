@@ -76,7 +76,7 @@ function updateDisplay() {
 }
 
 
-// Number input
+// Number
 
 function inputNumber(number) {
 
@@ -92,6 +92,25 @@ function inputNumber(number) {
     } else {
 
         displayValue += number;
+
+    }
+
+    updateDisplay();
+}
+
+
+// Decimal
+
+function inputDecimal() {
+
+    if (waitingForSecondNumber) {
+
+        displayValue = "0.";
+        waitingForSecondNumber = false;
+
+    } else if (!displayValue.includes(".")) {
+
+        displayValue += ".";
 
     }
 
@@ -122,6 +141,7 @@ function selectOperator(nextOperator) {
     } else {
 
         firstNumber = inputValue;
+
     }
 
     operator = nextOperator;
@@ -190,6 +210,12 @@ buttons.forEach(button => {
         button.addEventListener("click", () => {
             inputNumber(value);
         });
+
+    }
+
+    else if (value === ".") {
+
+        button.addEventListener("click", inputDecimal);
 
     }
 
