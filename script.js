@@ -118,6 +118,22 @@ function inputDecimal() {
 }
 
 
+// Backspace
+
+function backspace() {
+
+    if (waitingForSecondNumber) {
+        return;
+    }
+
+    displayValue = displayValue.length > 1
+        ? displayValue.slice(0, -1)
+        : "0";
+
+    updateDisplay();
+}
+
+
 // Operator
 
 function selectOperator(nextOperator) {
@@ -205,7 +221,13 @@ buttons.forEach(button => {
 
     const value = button.textContent;
 
-    if (/^\d$/.test(value)) {
+    if (button.classList.contains("clear")) {
+
+        button.addEventListener("click", clearCalculator);
+
+    }
+
+    else if (/^\d$/.test(value)) {
 
         button.addEventListener("click", () => {
             inputNumber(value);
@@ -233,13 +255,7 @@ buttons.forEach(button => {
 
     }
 
-    else if (value === "C") {
-
-        button.addEventListener("click", clearCalculator);
-
-    }
-
-    else if (value === "Backspace") {
+    else if (value.trim() === "Backspace") {
 
         button.addEventListener("click", backspace);
 
